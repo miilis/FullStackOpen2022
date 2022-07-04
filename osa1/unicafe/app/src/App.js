@@ -5,14 +5,21 @@ const Button = ({handleClick, text}) => {
 }
 
 const Statistics = (props) => {
+  if (props.stats.all > 0) {
+    return (
+      <div>
+        <div>good {props.stats.good} </div>
+        <div>neutral {props.stats.neutral} </div>
+        <div>bad {props.stats.bad} </div>
+        <div>all {props.stats.all} </div>
+        <div>average {props.stats.average} </div>
+        <div>positive {props.stats.positive + " %"} </div>
+      </div>
+    )
+  }
   return (
     <div>
-      <div>good {props.stats.good} </div>
-      <div>neutral {props.stats.neutral} </div>
-      <div>bad {props.stats.bad} </div>
-      <div>all {props.stats.all} </div>
-      <div>average {props.stats.average} </div>
-      <div>positive {props.stats.positive + " %"} </div>
+      No feedback given
     </div>
   )
 }
