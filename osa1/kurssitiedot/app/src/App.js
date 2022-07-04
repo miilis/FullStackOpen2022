@@ -5,21 +5,26 @@ const Button = ({handleClick, text}) => {
 }
 
 const StatisticLine = ({text, value}) => (
-  <div>{text} {value} </div>
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
 )
 
 const Statistics = (props) => {
   if (props.stats.all > 0) {
     return (
-      <div>
-        <StatisticLine text="good" value ={props.stats.good} />
-        <StatisticLine text="neutral" value ={props.stats.neutral} />
-        <StatisticLine text="bad" value ={props.stats.bad} />
+      <table>
+        <tbody>
+          <StatisticLine text="good" value ={props.stats.good} />
+          <StatisticLine text="neutral" value ={props.stats.neutral} />
+          <StatisticLine text="bad" value ={props.stats.bad} />
 
-        <StatisticLine text="all" value ={props.stats.all} />
-        <StatisticLine text="average" value ={props.stats.average} />
-        <StatisticLine text="positive" value ={props.stats.positive + " %"} />
-      </div>
+          <StatisticLine text="all" value ={props.stats.all} />
+          <StatisticLine text="average" value ={props.stats.average} />
+          <StatisticLine text="positive" value ={props.stats.positive + " %"} />
+        </tbody>
+      </table>
     )
   }
   return (
