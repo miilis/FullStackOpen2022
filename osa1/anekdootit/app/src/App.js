@@ -23,14 +23,21 @@ const App = () => {
     let random = getRndInteger(min, max)
     setSelected(random)
   }
+
   const addVote = (selected) => {
     const copy = [...points]
     copy[selected] += 1
     setPoints(copy)
   }
 
+  const mostPoints = points.indexOf(Math.max(...points))
+
   return (
     <>
+      <h1>
+        Anecdote of the day
+      </h1>
+
       <div>
         {anecdotes[selected]}
       </div>
@@ -46,8 +53,15 @@ const App = () => {
       <button onClick={() => select_random_anecdote(0, numAnecdotes-1)}>
         next anecdote
       </button>
+      
+      <h1>
+        Anecdote with most votes
+      </h1>
+
+      <div>
+        {anecdotes[mostPoints]}
+      </div>
     </>
-    
   )
 }
 
