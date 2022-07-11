@@ -12,8 +12,33 @@ const Languages = ({country}) => {
   )
 }
 
-const Country = ({country}) => {
+const Weather = ({country}) => {
+  const api_key = process.env.REACT_APP_API_KEY
+  if (!api_key) {
+    console.log('No API key in REACT_APP_API_KEY');
+  }
 
+  const lat = country.latlng[0]
+  const long = country.latlng[1]
+  const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=hourly,daily&appid=${api_key}`
+  console.log(url);
+
+  axios
+    .get(url)
+    .then((response) => {
+      // TODO: response is always "Request failed with status code 401" (Invalid API key). Api key checked and waited over a day after account creation.
+      console.log(response.data);
+    })
+
+  return (
+    <div>
+      <h1>Weather in {country.capital}</h1>
+    </div>
+  )
+}
+
+const Country = ({country}) => {
+  
   return (
     <div>
       <h1>{country.name.common}</h1>
@@ -24,6 +49,8 @@ const Country = ({country}) => {
       <Languages country={country} />
 
       <img src={country.flags.png} alt="The flag" />
+
+      <Weather country={country} />
     </div>
   )
 }
