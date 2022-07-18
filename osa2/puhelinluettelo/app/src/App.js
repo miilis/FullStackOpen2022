@@ -46,11 +46,17 @@ const PersonForm = ({addNewName, newName, handleNewNameChange, newNumber, handle
   )
 }
 
-const Notification = ({ message }) => {
-  if (message === null) {
-    return null
-  }
+const Notification = ({ errorMessage, message }) => {
   const errorStyle = {
+    color: 'red',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+  const notifyStyle = {
     color: 'green',
     background: 'lightgrey',
     fontSize: 20,
@@ -60,11 +66,21 @@ const Notification = ({ message }) => {
     marginBottom: 10
   }
 
-  return (
-    <div style={errorStyle}>
-      {message}
-    </div>
-  )
+  if (errorMessage !== null) {
+    return (
+      <div style={errorStyle}>
+        {errorMessage}
+      </div>
+    )
+  }
+  if (message !== null) {
+    return (
+      <div style={notifyStyle}>
+        {message}
+      </div>
+    )
+  }
+  return null
 }
 
 const App = () => {
@@ -73,6 +89,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
+  const [nofityMessage, setNotifyMessage] = useState(null)
 
   const handleNewNameChange = (event) => {
     // console.log(event.target.value);
@@ -100,14 +117,18 @@ const App = () => {
         setPersons(persons.filter(personToMap => {
           return personToMap.id !== person.id}
           ))
-        setErrorMessage(`Deleted ${person.name}`)
+          setNotifyMessage(`Deleted ${person.name}`)
         setTimeout(() => {
-          setErrorMessage(null)
+          setNotifyMessage(null)
         }, 5000)
         })
-        .catch(error =>
-          console.log('delete fail')
-        )
+        .catch(error => {
+          console.log('Delete fail')
+          setErrorMessage(`Deleting ${person.name} failed`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
     }
   }
   
@@ -128,14 +149,18 @@ const App = () => {
           .updateId(duplicatePerson.id, nameObject)
           .then(response => {
             setPersons(persons.map(personToMap => personToMap.id === duplicatePerson.id ? response.data : personToMap))
-            setErrorMessage(`Updated ${nameObject.name}`)
+            setNotifyMessage(`Updated ${nameObject.name}`)
+            setTimeout(() => {
+              setNotifyMessage(null)
+            }, 5000)
+          })
+          .catch(error => {
+            console.log('Update fail')
+            setErrorMessage(`Updating ${nameObject.name} failed`)
             setTimeout(() => {
               setErrorMessage(null)
             }, 5000)
           })
-          .catch(error =>
-            console.log('update fail')
-          )
       }
     }
     else {
@@ -143,14 +168,18 @@ const App = () => {
         .create(nameObject)
         .then(response => {
           setPersons(persons.concat(response.data))
-          setErrorMessage(`Added ${nameObject.name}`)
+          setNotifyMessage(`Added ${nameObject.name}`)
+          setTimeout(() => {
+            setNotifyMessage(null)
+          }, 5000)
+        })
+        .catch(error => {
+          console.log('Add fail')
+          setErrorMessage(`Adding ${nameObject.name} failed`)
           setTimeout(() => {
             setErrorMessage(null)
           }, 5000)
         })
-        .catch(error =>
-          console.log('fail')
-        )
     }
     setNewName('')
     setNewNumber('')
@@ -168,7 +197,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
 
-      <Notification message={errorMessage} />
+      <Notification errorMessage={errorMessage} message={nofityMessage} />
 
       <Filter newFilter={newFilter} handleNewFilterChange={handleNewFilterChange} />
 
