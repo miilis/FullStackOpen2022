@@ -46,12 +46,33 @@ const PersonForm = ({addNewName, newName, handleNewNameChange, newNumber, handle
   )
 }
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+  const errorStyle = {
+    color: 'green',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+
+  return (
+    <div style={errorStyle}>
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const url = 'http://localhost:3001/persons'
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const handleNewNameChange = (event) => {
     // console.log(event.target.value);
@@ -79,6 +100,10 @@ const App = () => {
         setPersons(persons.filter(personToMap => {
           return personToMap.id !== person.id}
           ))
+        setErrorMessage(`Deleted ${person.name}`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
         })
         .catch(error =>
           console.log('delete fail')
@@ -103,6 +128,10 @@ const App = () => {
           .updateId(duplicatePerson.id, nameObject)
           .then(response => {
             setPersons(persons.map(personToMap => personToMap.id === duplicatePerson.id ? response.data : personToMap))
+            setErrorMessage(`Updated ${nameObject.name}`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
           })
           .catch(error =>
             console.log('update fail')
@@ -112,9 +141,13 @@ const App = () => {
     else {
       personsService
         .create(nameObject)
-        .then(response =>
+        .then(response => {
           setPersons(persons.concat(response.data))
-        )
+          setErrorMessage(`Added ${nameObject.name}`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
         .catch(error =>
           console.log('fail')
         )
@@ -134,6 +167,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Notification message={errorMessage} />
 
       <Filter newFilter={newFilter} handleNewFilterChange={handleNewFilterChange} />
 
