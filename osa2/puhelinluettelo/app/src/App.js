@@ -93,11 +93,21 @@ const App = () => {
       number: newNumber
     }
     
-    const isMultiple = persons.filter(person =>
+    const duplicatePerson = persons.find(person =>
       person.name === newName  
     )
-    if (isMultiple.length) {
-      alert(`${newName} is already added to phonebook`)
+    
+    if (duplicatePerson) {
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        personsService
+          .updateId(duplicatePerson.id, nameObject)
+          .then(response => {
+            setPersons(persons.map(personToMap => personToMap.id === duplicatePerson.id ? response.data : personToMap))
+          })
+          .catch(error =>
+            console.log('update fail')
+          )
+      }
     }
     else {
       personsService
