@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import personsService from "./services/persons"
 
-const Person = ({person}) => {
+const Person = ({person, deletePerson}) => {
   return (
-    <p>{person.name} {person.number}</p>
+    <p>{person.name} {person.number} <button onClick={() => deletePerson(person)}>delete</button> </p>
   )
 }
 
-const Persons = ({persons, filter}) => {
+const Persons = ({persons, filter, deletePerson}) => {
   if (filter) {
     const personsFiltered = persons.filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()))
     persons = personsFiltered
@@ -16,7 +16,7 @@ const Persons = ({persons, filter}) => {
   return (
     <div>
       {persons.map((person) =>
-        <Person key={person.name} person={person}/>
+        <Person key={person.name} person={person} deletePerson={deletePerson}/>
       )}
     </div>
   )
@@ -67,6 +67,24 @@ const App = () => {
     // console.log(event.target.value);
     setNewFilter(event.target.value)    
   }
+
+  const deletePerson = (person) => {
+    if(window.confirm(`Delete ${person.name} ?`)) {
+      console.log(`delete ${person.id}`);
+      personsService
+        .deleteId(person.id)
+        .then(response => {
+          console.log(response)
+          console.log(`deleted ${person.id}`)
+        setPersons(persons.filter(personToMap => {
+          return personToMap.id !== person.id}
+          ))
+        })
+        .catch(error =>
+          console.log('delete fail')
+        )
+    }
+  }
   
   const addNewName = (event) => {
     event.preventDefault()
@@ -115,7 +133,7 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Persons persons={persons} filter={newFilter}/>
+      <Persons persons={persons} filter={newFilter} deletePerson={deletePerson}/>
 
     </div>
   )
