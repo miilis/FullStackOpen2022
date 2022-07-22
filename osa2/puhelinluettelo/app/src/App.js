@@ -155,8 +155,8 @@ const App = () => {
             }, 5000)
           })
           .catch(error => {
-            console.log('Update fail')
-            setErrorMessage(`Updating ${nameObject.name} failed`)
+            console.log(error.response.data.error)
+            setErrorMessage(error.response.data.error)
             setTimeout(() => {
               setErrorMessage(null)
             }, 5000)
@@ -174,8 +174,8 @@ const App = () => {
           }, 5000)
         })
         .catch(error => {
-          console.log('Add fail')
-          setErrorMessage(`Adding ${nameObject.name} failed`)
+          console.log(error.response.data.error)
+          setErrorMessage(error.response.data.error)
           setTimeout(() => {
             setErrorMessage(null)
           }, 5000)
